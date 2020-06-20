@@ -5,15 +5,16 @@ startup
 
 init
 {
+    vars.isLoading = false;
     print("[MK8DX Autosplitter] Initialisation Complete.");
 }
 
 update
 {
-    
+    vars.isLoading = features["lapFlag"] < 90;
 }
 
 isLoading
 {
-    return features["lapFlag"] < 60;
+    return vars.isLoading;
 }
