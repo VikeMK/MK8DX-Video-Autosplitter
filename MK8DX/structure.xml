@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameProfile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>MK8DX</Name>
+  <Screens>
+    <Screen>
+      <Name>Game</Name>
+      <Geometry>
+        <Width>1920</Width>
+        <Height>1080</Height>
+      </Geometry>
+      <WatchZones>
+		<WatchZone>
+          <Name>lapFlag</Name>
+          <Geometry>
+            <X>253</X>
+            <Y>981</Y>
+            <Width>39</Width>
+            <Height>40</Height>
+          </Geometry>
+          <Watches>
+            <Watcher>
+              <Name>lapFlag</Name>
+              <Equalize>false</Equalize>
+              <ErrorMetric>PeakAbsolute</ErrorMetric>
+              <WatchImages>
+                <WatchImage>
+                  <FilePath>lapFlag.png</FilePath>
+                </WatchImage>
+              </WatchImages>
+            </Watcher>
+          </Watches>
+        </WatchZone>
+      </WatchZones>
+    </Screen>
+  </Screens>
+</GameProfile>
