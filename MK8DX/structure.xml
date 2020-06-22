@@ -10,7 +10,7 @@
       </Geometry>
       <WatchZones>
         <WatchZone>
-          <Name>lapFlag</Name>
+          <Name>_lapFlag</Name>
           <Geometry>
             <X>253</X>
             <Y>981</Y>
@@ -19,7 +19,7 @@
           </Geometry>
           <Watches>
             <Watcher>
-              <Name>lapFlag</Name>
+              <Name>_lapFlag</Name>
               <Equalize>false</Equalize>
               <ErrorMetric>PeakSignalToNoiseRatio</ErrorMetric>
               <WatchImages>
