@@ -6,10 +6,10 @@ init
 
 update
 {
-    vars.hasLapFlag = (features["lapFlag"] > 90);
+    vars.hasLapFlag = features["lapFlag1"].current > 95;
 }
 
 isLoading
 {
-    return vars.hasLapFlag == false;
+    return !vars.hasLapFlag;
 }

@@ -10,7 +10,7 @@
       </Geometry>
       <WatchZones>
         <WatchZone>
-          <Name>_lapFlag</Name>
+          <Name>lapFlag</Name>
           <Geometry>
             <X>253</X>
             <Y>981</Y>
@@ -19,12 +19,12 @@
           </Geometry>
           <Watches>
             <Watcher>
-              <Name>_lapFlag</Name>
+              <Name>lapFlag</Name>
               <Equalize>false</Equalize>
               <ErrorMetric>PeakSignalToNoiseRatio</ErrorMetric>
               <WatchImages>
                 <WatchImage>
-                  <FilePath>lapFlag.png</FilePath>
+                  <FilePath>lapFlag1.png</FilePath>
                 </WatchImage>
               </WatchImages>
             </Watcher>
