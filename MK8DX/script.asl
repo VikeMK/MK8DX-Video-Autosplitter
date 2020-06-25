@@ -69,19 +69,29 @@ update
             // if the flag disappears
             if (features["lapFlag1"].current < 95)
             {
-                vars.timerModel.Split();
-                timer.Run[timer.CurrentSplitIndex - 1].SplitTime.RealTime -= vars.endOffset;
-                timer.Run[timer.CurrentSplitIndex - 1].SplitTime.GameTime -= vars.endOffset;
+                // set vars.isLoading early because of potential race conditions
+                vars.isLoading = true;
 
-                // if the timer is still running (i.e. the run has not ended yet)
-                if (timer.CurrentPhase == TimerPhase.Running)
+                // subtract endOffset from the split time because that is when we actually crossed the finish line
+                timer.CurrentSplit.SplitTime = timer.CurrentTime - new Time(vars.endOffset, vars.endOffset);
+
+                // move to the next split
+                timer.CurrentSplitIndex++;
+
+                if (timer.Run.Count == timer.CurrentSplitIndex)
                 {
-                    // add the endOffset time so that we can indicate that the game started loading when the split occurred
-                    timer.LoadingTimes += vars.endOffset;
-
-                    // and enable loading
-                    vars.isLoading = true;
+                    // If the run has ended, set the timer to ended
+                    timer.CurrentPhase = TimerPhase.Ended;
+                    timer.AttemptEnded = TimeStamp.CurrentDateTime;
                 }
+                else
+                {
+                    // add endOffset time so that we can indicate that loading started when the split occurred
+                    timer.LoadingTimes += vars.endOffset;
+                }
+
+                // set the necessary flags for LiveSplit to propagate the split changes to the other components.
+                vars.timerModel.OnSplit.Invoke(vars.timerModel, null);
             }
         }
     }
