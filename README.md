@@ -6,8 +6,7 @@
 - [LiveSplit 1.8.11 or later](http://livesplit.org/).
 - A DirectShow output which has the game capture.
   - For OBS, this can be done using [VirtualCam](https://obsproject.com/forum/resources/obs-virtualcam.949/).
-    - I recommend setting this up using the Source Filter option on the game capture. You can find this by right clicking the Game Capture in OBS, then clicking on "Filters".
-    - Make sure that you "Start" the virtual camera under the filter settings whenever you want to use the auto-splitter.
+    - I recommend setting this up using the Source Filter option on the game capture. There are instructions on how to do this in the link above.
   - XSplit has a [built-in Virtual Camera](https://www.youtube.com/watch?v=WxPJdUtEae8) you can use.
 
 ### Installation
