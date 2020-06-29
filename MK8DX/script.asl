@@ -4,10 +4,10 @@ init
     vars.timerModel = new TimerModel { CurrentState = timer };
 
     // time between the flag icon appearing and the race starting
-    vars.startOffset = TimeSpan.FromSeconds(3.05);
+    vars.startOffset = TimeSpan.FromSeconds(2.97);
 
     // time between the race ending and the flag icon disappearing
-    vars.endOffset = TimeSpan.FromSeconds(3.05);
+    vars.endOffset = TimeSpan.FromSeconds(3.16);
 
     // the phase of the timer the last time the update was run
     vars.prevPhase = TimerPhase.NotRunning;
@@ -50,6 +50,11 @@ update
         // If we were loading the last time we updated
         if (vars.isLoading)
         {
+            if (timer.CurrentTime.GameTime < TimeSpan.Zero)
+            {
+                timer.SetGameTime(TimeSpan.Zero);
+            }
+            
             // if we are seeing the flag for the first time after loading
             if (vars.timeToDisableLoading == null && features["lapFlag1"].current > 95)
             {
