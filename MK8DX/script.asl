@@ -9,76 +9,90 @@ init
     // time between the race ending and the flag icon disappearing
     vars.endOffset = TimeSpan.FromSeconds(3.16);
 
-    // the phase of the timer the last time the update was run
-    vars.prevPhase = TimerPhase.NotRunning;
-
-    // represents if the game was loading the last time the update was run
+    // represents if the game was loading the last time "update" was run
     vars.isLoading = true;
 
-    // stores a value representing the time when loading should stop and game time should start
+    // represents the time when loading should stop and game time should start
     // this will be calculated by taking the time the lap flag is  seen and adding startOffset to it.
-    vars.timeToDisableLoading = (DateTime?)null;
+    vars.timeToDisableLoading = DateTime.MinValue;
 
-    // disable looking for the lap flag on startup as the timer is not active
-    //features["lapFlag1"].pause();
+    // This stores the time when we first saw the flag disappear.
+    vars.firstTimeFlagDisappeared = DateTime.MinValue;
 }
 
 update
 {
-    // Detect if the user has reset the timer and resets the variables if so.
-    if (vars.prevPhase != timer.CurrentPhase && timer.CurrentPhase == TimerPhase.NotRunning)
+    // Only run the auto-splitter while the timer is running
+    if (timer.CurrentPhase != TimerPhase.Running)
     {
-        vars.prevPhase = TimerPhase.NotRunning;
-        vars.isLoading = true;
-        vars.timeToDisableLoading = (DateTime?)null;
-        //features["lapFlag1"].pause();
+        // If the timer phase is "NotRunning", ensure the variables are their defaults.
+        if (timer.CurrentPhase == TimerPhase.NotRunning)
+        {
+            vars.isLoading = true;
+            vars.timeToDisableLoading = DateTime.MinValue;
+            vars.firstTimeFlagDisappeared = DateTime.MinValue;
+        }
+
+        return false;
     }
 
-    if (timer.CurrentPhase == TimerPhase.Running)
-    {
-        // Detect if the user has just started the timer
-        if (vars.prevPhase == TimerPhase.NotRunning)
-        {
-            // enable feature detection again
-            //features["lapFlag1"].resume();
+    var isFlagVisible = features["lapFlag1"].current > 95;
 
-            // Set the game time to zero as without this there is a small amount of time between when the 
-            // run starts and the update method is called.
+    if (vars.isLoading)
+    {
+        // Ensure the game time is set to 0 before the first loading time.
+        var gameTime = timer.CurrentTime.GameTime;
+        if (gameTime != TimeSpan.Zero && gameTime < vars.startOffset)
+        {
             timer.SetGameTime(TimeSpan.Zero);
         }
 
-        // If we were loading the last time we updated
-        if (vars.isLoading)
+        // Check if the flag icon is showing
+        if (isFlagVisible)
         {
-            if (timer.CurrentTime.GameTime < TimeSpan.Zero)
-            {
-                timer.SetGameTime(TimeSpan.Zero);
-            }
-            
-            // if we are seeing the flag for the first time after loading
-            if (vars.timeToDisableLoading == null && features["lapFlag1"].current > 95)
+            // If we have not set a time to disable loading yet, set it.
+            // This will occur when the flag appears for the first time after loading
+            if (vars.timeToDisableLoading == DateTime.MinValue)
             {
                 // Set a time in the future that loading will be turned off
                 vars.timeToDisableLoading = DateTime.UtcNow + vars.startOffset;
             }
-            // if we have already seen the flag and have passed the time to disable loading
-            else if (vars.timeToDisableLoading != null && DateTime.UtcNow >= vars.timeToDisableLoading)
+            else if (DateTime.UtcNow >= vars.timeToDisableLoading)
             {
                 // turn off loading if we have passed the time to disable loading
                 vars.isLoading = false;
-                vars.timeToDisableLoading = null;
+                vars.timeToDisableLoading = DateTime.MinValue;
             }
         }
         else
         {
-            // if the flag disappears
-            if (features["lapFlag1"].current < 95)
+            // make sure we aren't planning to disable loading any time soon if the flag has disappeared.
+            // This can occur if the flag is falsely detected at the wrong time, so we want to ignore those
+            // false positives.
+            vars.timeToDisableLoading = DateTime.MinValue;
+        }
+    }
+    else if (!isFlagVisible)
+    {
+        if (vars.firstTimeFlagDisappeared == DateTime.MinValue)
+        {
+            vars.firstTimeFlagDisappeared = DateTime.UtcNow;
+        }
+        else
+        {
+            var timeSinceDisappearence = DateTime.UtcNow - vars.firstTimeFlagDisappeared;
+            if (timeSinceDisappearence >= TimeSpan.FromSeconds(1))
             {
-                // set vars.isLoading early because of potential race conditions
                 vars.isLoading = true;
+                vars.firstTimeFlagDisappeared = DateTime.MinValue;
 
-                // subtract endOffset from the split time because that is when we actually crossed the finish line
-                timer.CurrentSplit.SplitTime = timer.CurrentTime - new Time(vars.endOffset, vars.endOffset);
+                // Determine when we would have crossed the line. This is calculated by adding the endOffset which
+                // represents the time bewteen crossing the line and the flag disappearing to the time between when
+                // we saw it first disappear and now.
+                var timeToSubtract = vars.endOffset + timeSinceDisappearence;
+
+                // Set the split time of the current split to the correct value.
+                timer.CurrentSplit.SplitTime = timer.CurrentTime - new Time(timeToSubtract, timeToSubtract);
 
                 // move to the next split
                 timer.CurrentSplitIndex++;
@@ -100,8 +114,11 @@ update
             }
         }
     }
-    
-    vars.prevPhase = timer.CurrentPhase;
+    else
+    {
+        // Reset the number of frames that the flag is gone to 0 just in case it accidentally triggered.
+        vars.firstTimeFlagDisappeared = DateTime.MinValue;
+    }
 }
 
 isLoading
