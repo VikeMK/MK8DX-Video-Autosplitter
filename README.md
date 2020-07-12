@@ -6,13 +6,20 @@
 - [LiveSplit 1.8.11 or later](http://livesplit.org/).
 - A DirectShow output which has the game capture.
   - For OBS, this can be done using [VirtualCam](https://obsproject.com/forum/resources/obs-virtualcam.949/).
-    - I recommend setting this up using the Source Filter option on the game capture. There are instructions on how to do this in the link above.
+    - I recommend setting this up using the Source Filter option on the game capture.
+    - To do this, right click on the Game Capture under your sources in OBS > Filters > Add Effect Filter (+) > VirtualCam
+    - You will need to open this filter every time you open OBS and press the Start button.
   - XSplit has a [built-in Virtual Camera](https://www.youtube.com/watch?v=WxPJdUtEae8) you can use.
+  - If you want to use Streamlabs OBS:
+    - Run OBS and Streamlabs OBS at the same time.
+    - In OBS add the VirtualCam as described above.
+    - Use the VirtualCam created by OBS in LiveSplit and Streamlabs OBS.
 
 ### Installation
 1. Download the [latest version](https://github.com/ROMaster2/LiveSplit.VideoAutoSplit/releases) of the `LiveSplit.VideoAutoSplit` component.
 1. Find your LiveSplit folder and extract the contents into the Components folder. If you are updating from a previous version, replace the existing files.
 1. Download the [latest version](https://github.com/VikeMK/MK8DX-Video-Autosplitter/releases) of the MK8DX auto-splitter. You want to download the `MK8DX.vas` file.
+1. Start LiveSplit as Administrator (you must always run LiveSplit as Administrator)
 1. In LiveSplit's layout editor, click the big (+) button, hover over control, and add the `Video Auto Splitter` component.
 1. Open the component's settings by double clicking on "Video Auto Splitter" in the list.
 1. For `Game Profile` find the MK8DX.vas file you downloaded earlier.
@@ -47,7 +54,7 @@ A demo of how the load time removal and auto-splitter should work can be seen in
 
 ### Troubleshooting
 - The VideoAutoSplit plugin is very flaky/buggy and tends to break on the `Scan Region` tab, so if things seem to just stop working, restart LiveSplit.
-- If you are unable to see the OBS Camera in the dropdown for the `Capture Device` setting, make sure that you have started the VirtualCam in OBS. If it has started but you still can't see it, try uninstalling and reinstalling VirtualCam.
+- If you are unable to see the OBS Camera in the dropdown for the `Capture Device` setting, make sure that you have started the VirtualCam in OBS. If it has started but you still can't see it, try uninstalling and reinstalling VirtualCam. If that doesn't work, also try restarting your computer.
 - Make sure you have the color range set to "Full" on your game capture. In OBS this is found under the game capture settings.
 - If you can see a preview of the game, but the blue square does not appear on top of the flag, make sure that you have the width and height set correctly. And that the game capture takes up the full screen.
   - Make sure you don't have any zoom set in your switch settings (`TV Settings` > `Adjust Screen Size`).
