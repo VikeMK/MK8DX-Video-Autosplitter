@@ -106,7 +106,7 @@ update
                 else
                 {
                     // add endOffset time so that we can indicate that loading started when the split occurred
-                    timer.LoadingTimes += vars.endOffset;
+                    timer.LoadingTimes += timeToSubtract;
                 }
 
                 // set the necessary flags for LiveSplit to propagate the split changes to the other components.
